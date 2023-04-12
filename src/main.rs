@@ -1,14 +1,26 @@
-use clap::Parser;
+use clap::{Parser, Subcommand};
 
-/// Create, build, and release Android apps faster without Android Studio
+mod commands;
+
 #[derive(Parser, Debug)]
-#[clap(name = "android")]
+#[clap(name = "Android CLI")]
+#[clap(author, version, about)]
 #[clap(author = "Syed Ahkam <smahkam57@gmail.com>")]
 #[clap(arg_required_else_help = true)]
-struct Cli {}
+struct Cli {
+    #[clap(subcommand)]
+    command: SubCommand,
+}
+
+#[derive(Subcommand, Debug)]
+enum SubCommand {
+    Create(commands::create::Create),
+}
 
 fn main() {
-    let _args = Cli::parse();
+    let args = Cli::parse();
 
-    println!("Hello, world!");
+    match args.command {
+        SubCommand::Create(args) => commands::create::handle(args),
+    }
 }
