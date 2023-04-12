@@ -8,4 +8,9 @@ license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[[bin]]
+name = "android"
+path = "src/main.rs"
+
 [dependencies]
+clap = { version = "4.2.1", features = ["derive"] } 
