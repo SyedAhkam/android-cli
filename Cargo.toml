@@ -2,7 +2,7 @@
 name = "android-cli"
 version = "0.1.0"
 edition = "2021"
-description = "Work in progress"
+description = "Create, build, and release Android apps faster without Android Studio."
 readme = "README.md"
 license = "MIT"
 
@@ -13,4 +13,5 @@ name = "android"
 path = "src/main.rs"
 
 [dependencies]
-clap = { version = "4.2.1", features = ["derive"] } 
+# holding on clap 4.x until they figure out colors: https://epage.github.io/blog/2022/09/clap4/#polishing-help-output
+clap = { version = "3.2.23", features = ["default", "derive"] } 
