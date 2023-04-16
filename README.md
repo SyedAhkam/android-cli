@@ -2,6 +2,8 @@
 
 Create, build, and release Android apps faster without Android Studio.
 
+> ⚠  Still️ in early development. Not all commands are implemented yet.
+
 ## Introduction
 
 Android CLI is a powerful tool that simplifies and streamlines the Native Android development process. It provides a single interface for developers to create, build, and release Android applications without the need for cumbersome IDEs like Android Studio.
@@ -31,6 +33,10 @@ This abstraction layer allows developers to execute complex tasks with ease with
 
 > Yes, there is an `android` bash script that comes with the Android SDK. However, it has been deprecated, and its functionalities have been absorbed into Android Studio, making it the only supported option for Android development. This decision has frustrated developers who prefer to use a CLI to manage their projects.
 
-## License
+## Legal
 
-Forever free. [MIT License](LICENSE).
+The tool itself is forever free. Distributed under the [MIT License](LICENSE).
+
+However, the Android SDK is not free. You must accept the [Android SDK License Agreement](https://developer.android.com/studio/terms.html) before using the SDK.
+
+Additionally, the Android CLI is not affiliated with Google or the Android Open Source Project. Android is a trademark of Google Inc.
