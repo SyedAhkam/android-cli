@@ -15,3 +15,6 @@ path = "src/main.rs"
 [dependencies]
 # holding on clap 4.x until they figure out colors: https://epage.github.io/blog/2022/09/clap4/#polishing-help-output
 clap = { version = "3.2.23", features = ["default", "derive"] } 
+guidon = "0.4.1"
+env_logger = "0.10.0"
+dialoguer = "0.10.4"

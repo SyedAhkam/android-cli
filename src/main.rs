@@ -1,6 +1,7 @@
 use clap::{Parser, Subcommand};
 
 mod commands;
+mod utils;
 
 #[derive(Parser, Debug)]
 #[clap(name = "Android CLI")]
@@ -18,6 +19,9 @@ enum SubCommand {
 }
 
 fn main() {
+    // Initialize the logger with the log level info
+    env_logger::init();
+
     let args = Cli::parse();
 
     match args.command {
