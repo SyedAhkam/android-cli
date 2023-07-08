@@ -11,6 +11,10 @@ use crate::utils::prompt_for_input;
 const DEFAULT_TEMPLATE_REPO: &str = "https://github.com/SyedAhkam/android-cli-template";
 const TEMPLATE_REV: &str = "master";
 
+const DEFAULT_COMPILE_SDK_VERSION: &str = "33";
+const DEFAULT_TARGET_SDK_VERSION: &str = "33";
+const DEFAULT_MIN_SDK_VERSION: &str = "24";
+
 #[derive(Parser, Debug)]
 pub struct Create {
     #[clap(value_parser)]
@@ -31,6 +35,18 @@ pub struct Create {
     /// Package identifier [example: com.example.demo]
     #[clap(long)]
     package_id: Option<String>,
+
+    /// SDK version the app is compiled against
+    #[clap(long, default_value = DEFAULT_COMPILE_SDK_VERSION)]
+    compile_sdk_version: u32,
+
+    /// SDK version the app is targeting
+    #[clap(long, default_value = DEFAULT_TARGET_SDK_VERSION)]
+    target_sdk_version: u32,
+
+    /// Minimum SDK version that the app supports
+    #[clap(long, default_value = DEFAULT_MIN_SDK_VERSION)]
+    min_sdk_version: u32
 }
 
 fn get_vars(args: &Create) -> BTreeMap<String, String> {
@@ -59,11 +75,10 @@ fn get_vars(args: &Create) -> BTreeMap<String, String> {
     map.insert("package_id_org".into(), org);
     map.insert("package_id_name".into(), name);
 
-    // Version numbers, hardcoded for now
-    // TODO: make these configurable
-    map.insert("compile_sdk_version".into(), "33".into());
-    map.insert("min_sdk_version".into(), "24".to_string());
-    map.insert("target_sdk_version".into(), "33".to_string());
+    // Version numbers
+    map.insert("compile_sdk_version".into(), args.compile_sdk_version.to_string());
+    map.insert("target_sdk_version".into(), args.target_sdk_version.to_string());
+    map.insert("min_sdk_version".into(), args.min_sdk_version.to_string());
 
     map
 }
