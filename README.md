@@ -35,7 +35,7 @@ This abstraction layer allows developers to execute complex tasks with ease with
 
 ### But wait.. Don't I have to install Android Studio to get the SDK?
 
-Not necessarily.. If you go to https://developer.android.com/studio and scroll down enough you'll see a section named 'Command line tools only'. Just grab that and there's no need for Android Studio.
+Not necessarily. If you go to [Android Studio download page](https://developer.android.com/studio) and scroll down enough you'll see a section named 'Command line tools only'. Just grab that and there's no need for Android Studio.
 
 ## Legal
 
