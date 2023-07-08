@@ -33,6 +33,10 @@ This abstraction layer allows developers to execute complex tasks with ease with
 
 > Yes, there is an `android` bash script that comes with the Android SDK. However, it has been deprecated, and its functionalities have been absorbed into Android Studio, making it the only supported option for Android development. This decision has frustrated developers who prefer to use a CLI to manage their projects.
 
+### But wait.. Don't I have to install Android Studio to get the SDK?
+
+Not necessarily.. If you go to https://developer.android.com/studio and scroll down enough you'll see a section named 'Command line tools only'. Just grab that and there's no need for Android Studio.
+
 ## Legal
 
 The tool itself is forever free. Distributed under the [MIT License](LICENSE).
