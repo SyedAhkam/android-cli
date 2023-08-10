@@ -1,37 +1,24 @@
-use std::process::Command;
-
-use clap::{
-    Parser,
-    ArgAction
-};
-
-use crate::utils::find_gradle;
+use clap::{ArgAction, Parser};
 
 #[derive(Parser, Debug)]
 pub struct Build {
     /// Should build in release mode
     #[clap(short, long, default_value="false", action = ArgAction::SetTrue)]
-    release: bool
+    release: bool,
 }
 
 pub fn handle(args: Build) {
-    let gradle_path = find_gradle().expect("ERROR: Gradle not found on system");
-
     // Decide gradle subcommand to use
     let cmd = match args.release {
         true => "assembleRelease",
-        false => "assembleDebug"
+        false => "assembleDebug",
     };
 
     // Invoke gradle as child process
-    println!("Invoking Gradle: {}", gradle_path);
-    let status = Command::new(gradle_path)
-        .arg(cmd)
-        .status()
-        .unwrap();
+    let status = android_cli::invoke_gradle_command(cmd).unwrap();
 
     match status.success() {
         true => println!("Success!"),
-        false => println!("Failed while executing Gradle.")
+        false => println!("Failed while executing Gradle."),
     }
 }

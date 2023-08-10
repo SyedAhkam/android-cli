@@ -1,15 +1,8 @@
-use std::{
-    collections::BTreeMap,
-    path::{Path, PathBuf},
-};
+use std::{collections::BTreeMap, path::PathBuf};
 
 use clap::Parser;
-use guidon::{GitOptions, Guidon, TryNew};
 
 use crate::utils::prompt_for_input;
-
-const DEFAULT_TEMPLATE_REPO: &str = "https://github.com/SyedAhkam/android-cli-template";
-const TEMPLATE_REV: &str = "master";
 
 const DEFAULT_COMPILE_SDK_VERSION: &str = "33";
 const DEFAULT_TARGET_SDK_VERSION: &str = "33";
@@ -46,7 +39,7 @@ pub struct Create {
 
     /// Minimum SDK version that the app supports
     #[clap(long, default_value = DEFAULT_MIN_SDK_VERSION)]
-    min_sdk_version: u32
+    min_sdk_version: u32,
 }
 
 fn get_vars(args: &Create) -> BTreeMap<String, String> {
@@ -76,37 +69,21 @@ fn get_vars(args: &Create) -> BTreeMap<String, String> {
     map.insert("package_id_name".into(), name);
 
     // Version numbers
-    map.insert("compile_sdk_version".into(), args.compile_sdk_version.to_string());
-    map.insert("target_sdk_version".into(), args.target_sdk_version.to_string());
+    map.insert(
+        "compile_sdk_version".into(),
+        args.compile_sdk_version.to_string(),
+    );
+    map.insert(
+        "target_sdk_version".into(),
+        args.target_sdk_version.to_string(),
+    );
     map.insert("min_sdk_version".into(), args.min_sdk_version.to_string());
 
     map
 }
 
-fn create_local_properties_file(args: &Create) {
-    let prop_file_path = PathBuf::new()
-        .join(args.dest.as_ref().unwrap())
-        .join("local.properties");
-
-    let content = format!("sdk.dir={}", args.sdk_path.as_ref().unwrap());
-    std::fs::write(prop_file_path, content).expect("Unable to write local.properties file")
-}
-
-fn post_init(args: Create) {
-    create_local_properties_file(&args)
-}
-
-fn copy_template(dest: &Path, vars: BTreeMap<String, String>) {
-    let git_options = GitOptions::builder()
-        .repo(DEFAULT_TEMPLATE_REPO)
-        .rev(TEMPLATE_REV)
-        .build()
-        .unwrap();
-
-    let mut guidon = Guidon::try_new(git_options).unwrap();
-
-    guidon.variables(vars);
-    guidon.apply_template(dest).unwrap();
+fn post_create(args: Create) {
+    android_cli::create_local_properties_file(args.dest.unwrap().as_path(), &args.sdk_path.unwrap())
 }
 
 fn ensure_valid_args(args: Create) -> Create {
@@ -152,10 +129,10 @@ pub fn handle(args: Create) {
 
     // Copy template
     let dest = args.dest.as_ref().unwrap();
-    copy_template(dest, vars);
+    android_cli::copy_template(dest, vars);
 
     // Perform post init tasks
-    post_init(args);
+    post_create(args);
 
     println!("Project created successfully");
 }
