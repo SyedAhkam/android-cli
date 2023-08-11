@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use which::which;
 
 pub fn prompt_for_input(prompt: &str) -> String {
