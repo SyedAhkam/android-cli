@@ -83,7 +83,10 @@ fn get_vars(args: &Create) -> BTreeMap<String, String> {
 }
 
 fn post_create(args: Create) {
-    android_cli::create_local_properties_file(args.dest.unwrap().as_path(), &args.sdk_path.unwrap())
+    let dest = args.dest.clone().unwrap();
+
+    android_cli::create_local_properties_file(&dest, &args.sdk_path.unwrap());
+    android_cli::create_dot_file(&dest, args.package_id.unwrap());
 }
 
 fn ensure_valid_args(args: Create) -> Create {
