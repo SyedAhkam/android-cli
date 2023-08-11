@@ -16,7 +16,8 @@ struct Cli {
 #[derive(Subcommand, Debug)]
 enum SubCommand {
     Create(commands::create::Create),
-    Build(commands::build::Build)
+    Build(commands::build::Build),
+    Install(commands::install::Install)
 }
 
 fn main() {
@@ -27,6 +28,7 @@ fn main() {
 
     match args.command {
         SubCommand::Create(args) => commands::create::handle(args),
-        SubCommand::Build(args) => commands::build::handle(args)
+        SubCommand::Build(args) => commands::build::handle(args),
+        SubCommand::Install(args) => commands::install::handle(args)
     }
 }
