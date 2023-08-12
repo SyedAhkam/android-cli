@@ -1,9 +1,9 @@
 mod utils;
 
+use anyhow::{Context, Result};
 use guidon::{GitOptions, Guidon, TryNew};
 use itertools::Itertools;
 use serde::{Deserialize, Serialize};
-use anyhow::{Result, Context};
 
 use std::{
     collections::BTreeMap,
@@ -25,7 +25,7 @@ const DEFAULT_MAIN_ACTIVITY: &str = "MainActivity";
 pub struct DotAndroid {
     pub package_id: String,
     pub gen_at_version: String,
-    pub main_activity_name: String
+    pub main_activity_name: String,
 }
 
 pub fn copy_template(dest: &Path, vars: BTreeMap<String, String>) -> Result<()> {
@@ -87,7 +87,7 @@ pub fn create_dot_android(dest: &Path, package_id: String) -> Result<()> {
     let dot_android = DotAndroid {
         package_id,
         gen_at_version: VERSION.to_owned(),
-        main_activity_name: DEFAULT_MAIN_ACTIVITY.to_owned()
+        main_activity_name: DEFAULT_MAIN_ACTIVITY.to_owned(),
     };
 
     // Serialize into Ron
@@ -110,4 +110,37 @@ pub fn get_dot_android() -> Option<DotAndroid> {
     };
 
     None
+}
+
+pub fn install_apk(is_release: bool) -> Result<ExitStatus> {
+    let output_dir = PathBuf::from("app/build/outputs/apk");
+
+    let apk_path = match is_release {
+        true => output_dir.join("release/app-release.apk"),
+        false => output_dir.join("debug/app-debug.apk"),
+    };
+
+    Ok(invoke_adb_command(&["install", apk_path.to_str().unwrap()])
+        .context("failed to run adb command")?)
+}
+
+pub fn trigger_build(is_release: bool) -> Result<ExitStatus> {
+    // Decide gradle subcommand to use
+    let cmd = match is_release {
+        true => "assembleRelease",
+        false => "assembleDebug",
+    };
+
+    Ok(invoke_gradle_command(cmd).context("failed to invoke gradle command")?)
+}
+
+pub fn launch_activity(package_id: String, activity_name: String) -> Result<ExitStatus> {
+    Ok(invoke_adb_command(&[
+        "shell",
+        "am",
+        "start",
+        "-n",
+        &format!("{}/.{}", package_id, activity_name),
+    ])
+    .context("failed to invoke adb command")?)
 }

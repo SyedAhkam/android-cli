@@ -1,4 +1,4 @@
-use anyhow::{bail, Context, Result, anyhow};
+use anyhow::{anyhow, bail, Context, Result};
 use clap::{ArgAction, Parser};
 
 #[derive(Parser, Debug)]
@@ -9,35 +9,27 @@ pub struct Run {
 }
 
 pub fn handle(args: Run) -> Result<()> {
-    // Decide gradle subcommand to use
-    let build_cmd = match args.release {
-        true => "assembleRelease",
-        false => "assembleDebug",
-    };
-
     // Trigger a build
-    let build_status =
-        android_cli::invoke_gradle_command(build_cmd).context("failed to invoke gradle command")?;
-
+    let build_status = android_cli::trigger_build(args.release)?;
     if !build_status.success() {
         bail!("failed to build project");
     }
 
+    // Request an install to device
+    let install_status = android_cli::install_apk(args.release)?;
+    if !install_status.success() {
+        bail!("failed to install APK");
+    }
+
     // Fetch and deserialize .android
-    let dot_android = android_cli::get_dot_android().ok_or_else(|| anyhow!(".android not found, can't launch activity"))?;
+    let dot_android = android_cli::get_dot_android()
+        .ok_or_else(|| anyhow!(".android not found, can't launch activity"))?;
 
     // Try to launch MainActivity using ADB
-    let run_status = android_cli::invoke_adb_command(&[
-        "shell",
-        "am",
-        "start",
-        "-n",
-        &format!("{}/.{}", dot_android.package_id, dot_android.main_activity_name)
-    ])
-        .context("failed to invoke adb command")?;
-
-    if !run_status.success() {
-        bail!("failed to run the APK");
+    let launch_status =
+        android_cli::launch_activity(dot_android.package_id, dot_android.main_activity_name)?;
+    if !launch_status.success() {
+        bail!("failed to launch activity");
     }
 
     Ok(())
