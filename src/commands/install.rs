@@ -1,6 +1,7 @@
-use std::path::PathBuf;
-
 use clap::{ArgAction, Parser};
+use anyhow::{Result, Context};
+
+use std::path::PathBuf;
 
 #[derive(Parser, Debug)]
 pub struct Install {
@@ -9,7 +10,7 @@ pub struct Install {
     release: bool,
 }
 
-pub fn handle(args: Install) {
+pub fn handle(args: Install) -> Result<()> {
     let output_dir = PathBuf::from("app/build/outputs/apk");
 
     let apk_path = match args.release {
@@ -21,10 +22,12 @@ pub fn handle(args: Install) {
         "install",
         apk_path.to_str().unwrap()
     ])
-    .unwrap();
+    .context("failed to run adb command")?;
 
     match status.success() {
         true => println!("Successfully installed APK."),
         false => eprintln!("Failed to install APK"),
     };
+
+    Ok(())
 }

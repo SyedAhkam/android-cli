@@ -1,3 +1,4 @@
+use anyhow::{Context, Result};
 use clap::{ArgAction, Parser};
 
 #[derive(Parser, Debug)]
@@ -7,7 +8,7 @@ pub struct Build {
     release: bool,
 }
 
-pub fn handle(args: Build) {
+pub fn handle(args: Build) -> Result<()> {
     // Decide gradle subcommand to use
     let cmd = match args.release {
         true => "assembleRelease",
@@ -15,10 +16,13 @@ pub fn handle(args: Build) {
     };
 
     // Invoke gradle as child process
-    let status = android_cli::invoke_gradle_command(cmd).unwrap();
+    let status =
+        android_cli::invoke_gradle_command(cmd).context("failed to invoke gradle command")?;
 
     match status.success() {
         true => println!("Success!"),
         false => println!("Failed while executing Gradle."),
     }
+
+    Ok(())
 }

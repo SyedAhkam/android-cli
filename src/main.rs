@@ -26,9 +26,13 @@ fn main() {
 
     let args = Cli::parse();
 
-    match args.command {
+    let result = match args.command {
         SubCommand::Create(args) => commands::create::handle(args),
         SubCommand::Build(args) => commands::build::handle(args),
         SubCommand::Install(args) => commands::install::handle(args)
+    };
+
+    if result.is_err() {
+        eprintln!("ERROR: {:?}", result.unwrap_err());
     }
 }

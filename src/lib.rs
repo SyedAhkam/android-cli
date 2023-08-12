@@ -3,6 +3,7 @@ mod utils;
 use guidon::{GitOptions, Guidon, TryNew};
 use itertools::Itertools;
 use serde::{Deserialize, Serialize};
+use anyhow::{Result, Context};
 
 use std::{
     collections::BTreeMap,
@@ -25,28 +26,32 @@ struct DotAndroid {
     pub gen_at_version: String,
 }
 
-pub fn copy_template(dest: &Path, vars: BTreeMap<String, String>) {
+pub fn copy_template(dest: &Path, vars: BTreeMap<String, String>) -> Result<()> {
     let git_options = GitOptions::builder()
         .repo(DEFAULT_TEMPLATE_REPO)
         .rev(TEMPLATE_REV)
         .build()
         .unwrap();
 
-    let mut guidon = Guidon::try_new(git_options).unwrap();
+    let mut guidon = Guidon::try_new(git_options)?;
 
     guidon.variables(vars);
-    guidon.apply_template(dest).unwrap();
+    guidon.apply_template(dest)?;
+
+    Ok(())
 }
 
-pub fn create_local_properties_file(root: &Path, sdk_path: &str) {
+pub fn create_local_properties_file(root: &Path, sdk_path: &str) -> Result<()> {
     let prop_file_path = PathBuf::new().join(root).join("local.properties");
 
     let content = format!("sdk.dir={}", sdk_path);
-    std::fs::write(prop_file_path, content).expect("Unable to write local.properties file")
+    std::fs::write(prop_file_path, content).context("Unable to write local.properties file")?;
+
+    Ok(())
 }
 
-pub fn invoke_gradle_command(cmd: &str) -> Result<ExitStatus, Box<dyn std::error::Error>> {
-    let gradle_path = find_gradle().expect("ERROR: Gradle not found on system");
+pub fn invoke_gradle_command(cmd: &str) -> Result<ExitStatus> {
+    let gradle_path = find_gradle().context("ERROR: Gradle not found on system")?;
 
     let mut run = Command::new(gradle_path);
     run.arg(cmd);
@@ -60,8 +65,8 @@ pub fn invoke_gradle_command(cmd: &str) -> Result<ExitStatus, Box<dyn std::error
     Ok(run.status()?)
 }
 
-pub fn invoke_adb_command(args: &[&str]) -> Result<ExitStatus, Box<dyn std::error::Error>> {
-    let adb_path = find_adb().expect("ERROR: ADB not found on system");
+pub fn invoke_adb_command(args: &[&str]) -> Result<ExitStatus> {
+    let adb_path = find_adb().context("ERROR: ADB not found on system")?;
 
     let mut run = Command::new(adb_path);
     run.args(args);
@@ -75,7 +80,7 @@ pub fn invoke_adb_command(args: &[&str]) -> Result<ExitStatus, Box<dyn std::erro
     Ok(run.status()?)
 }
 
-pub fn create_dot_file(dest: &Path, package_id: String) {
+pub fn create_dot_file(dest: &Path, package_id: String) -> Result<()> {
     // Construct the structure
     let dot_android = DotAndroid {
         package_id,
@@ -84,12 +89,14 @@ pub fn create_dot_file(dest: &Path, package_id: String) {
 
     // Serialize into Ron
     let mut ron_contents =
-        ron::ser::to_string_pretty(&dot_android, ron::ser::PrettyConfig::default()).unwrap();
+        ron::ser::to_string_pretty(&dot_android, ron::ser::PrettyConfig::default())?;
 
     // Add a comment at top
     ron_contents.insert_str(0, DOTFILE_COMMENT);
 
     // Write to file
     let path = PathBuf::from(dest).join(".android");
-    std::fs::write(path, ron_contents).expect("failed to write .android file");
+    std::fs::write(path, ron_contents).context("failed to write .android file")?;
+
+    Ok(())
 }
