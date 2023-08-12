@@ -17,7 +17,8 @@ struct Cli {
 enum SubCommand {
     Create(commands::create::Create),
     Build(commands::build::Build),
-    Install(commands::install::Install)
+    Install(commands::install::Install),
+    Run(commands::run::Run)
 }
 
 fn main() {
@@ -29,7 +30,8 @@ fn main() {
     let result = match args.command {
         SubCommand::Create(args) => commands::create::handle(args),
         SubCommand::Build(args) => commands::build::handle(args),
-        SubCommand::Install(args) => commands::install::handle(args)
+        SubCommand::Install(args) => commands::install::handle(args),
+        SubCommand::Run(args) => commands::run::handle(args)
     };
 
     if result.is_err() {

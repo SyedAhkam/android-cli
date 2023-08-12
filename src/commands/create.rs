@@ -88,7 +88,7 @@ fn post_create(args: Create) -> Result<()> {
     let dest = args.dest.clone().unwrap();
 
     android_cli::create_local_properties_file(&dest, &args.sdk_path.unwrap())?;
-    android_cli::create_dot_file(&dest, args.package_id.unwrap())?;
+    android_cli::create_dot_android(&dest, args.package_id.unwrap())?;
 
     Ok(())
 }
