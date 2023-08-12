@@ -18,7 +18,7 @@ enum SubCommand {
     Create(commands::create::Create),
     Build(commands::build::Build),
     Install(commands::install::Install),
-    Run(commands::run::Run)
+    Run(commands::run::Run),
 }
 
 fn main() {
@@ -31,7 +31,7 @@ fn main() {
         SubCommand::Create(args) => commands::create::handle(args),
         SubCommand::Build(args) => commands::build::handle(args),
         SubCommand::Install(args) => commands::install::handle(args),
-        SubCommand::Run(args) => commands::run::handle(args)
+        SubCommand::Run(args) => commands::run::handle(args),
     };
 
     if result.is_err() {

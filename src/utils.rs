@@ -1,13 +1,15 @@
 #![allow(dead_code)]
 
-use anyhow::{Result, Context};
+use anyhow::{Context, Result};
 use which::which;
 
 pub fn prompt_for_input(prompt: &str) -> Result<String> {
-    Ok(dialoguer::Input::<String>::with_theme(&dialoguer::theme::ColorfulTheme::default())
-        .with_prompt(prompt)
-        .interact_text()
-        .context("failed to prompt user")?)
+    Ok(
+        dialoguer::Input::<String>::with_theme(&dialoguer::theme::ColorfulTheme::default())
+            .with_prompt(prompt)
+            .interact_text()
+            .context("failed to prompt user")?,
+    )
 }
 
 pub fn find_gradle() -> Option<String> {

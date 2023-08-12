@@ -1,4 +1,4 @@
-use anyhow::{Context, Result, anyhow};
+use anyhow::{anyhow, Context, Result};
 use clap::Parser;
 
 use std::{collections::BTreeMap, path::PathBuf};
@@ -49,9 +49,15 @@ fn get_vars(args: &Create) -> Result<BTreeMap<String, String>> {
     // FIXME: this is a hack, we should use a proper parser
     let get_package_id = |package_id: String| {
         let mut parts = package_id.split('.');
-        let domain = parts.next().ok_or_else(|| anyhow!("domain part missing in package"))?;
-        let org = parts.next().ok_or_else(|| anyhow!("org part missing in package"))?;
-        let name = parts.next().ok_or_else(|| anyhow!("name part missing in package"))?;
+        let domain = parts
+            .next()
+            .ok_or_else(|| anyhow!("domain part missing in package"))?;
+        let org = parts
+            .next()
+            .ok_or_else(|| anyhow!("org part missing in package"))?;
+        let name = parts
+            .next()
+            .ok_or_else(|| anyhow!("name part missing in package"))?;
 
         anyhow::Ok((domain.to_owned(), org.to_owned(), name.to_owned()))
     };
