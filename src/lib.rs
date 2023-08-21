@@ -144,3 +144,7 @@ pub fn launch_activity(package_id: String, activity_name: String) -> Result<Exit
     ])
     .context("failed to invoke adb command")?)
 }
+
+pub fn query_devices() -> Result<ExitStatus> {
+    Ok(invoke_adb_command(&["devices"]).context("failed to invoke adb command")?)
+}
