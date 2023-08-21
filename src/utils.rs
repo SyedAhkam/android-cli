@@ -3,13 +3,18 @@
 use anyhow::{Context, Result};
 use which::which;
 
-pub fn prompt_for_input(prompt: &str) -> Result<String> {
-    Ok(
-        dialoguer::Input::<String>::with_theme(&dialoguer::theme::ColorfulTheme::default())
-            .with_prompt(prompt)
-            .interact_text()
-            .context("failed to prompt user")?,
-    )
+pub fn prompt_for_input(prompt: &str, default: Option<String>) -> Result<String> {
+    let theme = dialoguer::theme::ColorfulTheme::default();
+    let mut builder = dialoguer::Input::<String>::with_theme(&theme);
+
+    if let Some(default_value) = default {
+        builder.default(default_value);
+    }
+
+    Ok(builder
+        .with_prompt(prompt)
+        .interact_text()
+        .context("failed to prompt user")?)
 }
 
 pub fn find_gradle() -> Option<String> {

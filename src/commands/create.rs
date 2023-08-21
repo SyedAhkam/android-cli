@@ -100,11 +100,30 @@ fn post_create(args: Create) -> Result<()> {
 }
 
 fn ensure_valid_args(args: Create) -> Result<Create> {
-    let dest = args
-        .dest
-        .unwrap_or_else(|| prompt_for_input("Enter destination path").unwrap().into());
+    let safe_name = |name: String| name.to_lowercase().replace(" ", "_");
 
-    let dest_folder_name = dest.file_name().unwrap().to_str().unwrap().to_owned(); // FIXME: this could fail on non-unicode paths
+    let dest = args.dest.unwrap_or_else(|| {
+        prompt_for_input("Enter destination path", Some(".".into()))
+            .unwrap()
+            .into()
+    });
+
+    // Ensure dest exists
+    if !dest.exists() {
+        println!("doesnt exist");
+        std::fs::create_dir_all(&dest)?;
+    }
+
+    // Normalize or Canonicalize the path
+    let dest = dest.canonicalize()?;
+
+    let dest_folder_name = dest
+        .file_name()
+        .unwrap()
+        .to_str()
+        .map(|name| safe_name(name.into()))
+        .unwrap()
+        .to_owned();
 
     let sdk_path = args.sdk_path.unwrap_or_else(|| {
         std::env::var("ANDROID_SDK_ROOT")
@@ -112,19 +131,19 @@ fn ensure_valid_args(args: Create) -> Result<Create> {
             .unwrap()
     });
 
-    let project_name = args
-        .project_name
-        .unwrap_or(dest_folder_name) // defaults to dest folder name
-        .to_lowercase()
-        .replace(" ", "_"); // Perform some cleanup
+    let project_name = args.project_name.map(safe_name).unwrap_or_else(|| {
+        prompt_for_input("Enter project name", Some(safe_name(dest_folder_name))).unwrap()
+    });
 
     let app_name = args.name.unwrap_or_else(|| project_name.clone());
 
     let package_id = args.package_id.unwrap_or_else(|| {
-        prompt_for_input("Enter package identifier [example: com.example.demo]")
-            .unwrap()
-            .to_lowercase()
-            .replace(" ", "_")
+        prompt_for_input(
+            "Enter package identifier [suggested to customize]",
+            Some(format!("com.example.{}", project_name)),
+        )
+        .map(safe_name)
+        .unwrap()
     });
 
     Ok(Create {
