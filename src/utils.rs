@@ -35,7 +35,6 @@ pub fn parse_package_id(package_id: String) -> Result<(String, String, String)> 
     anyhow::Ok((domain.to_owned(), org.to_owned(), name.to_owned()))
 }
 
-
 pub fn safe_name(name: String) -> String {
     name.to_lowercase().replace(" ", "_")
 }

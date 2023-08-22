@@ -1,5 +1,5 @@
+use anyhow::{anyhow, bail, Result};
 use clap::Parser;
-use anyhow::{Result, bail, anyhow};
 
 #[derive(Parser, Debug)]
 pub struct Launch {}

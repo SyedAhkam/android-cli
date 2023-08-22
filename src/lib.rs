@@ -83,13 +83,18 @@ pub fn invoke_adb_command(args: &[&str]) -> Result<ExitStatus> {
     Ok(run.status()?)
 }
 
-pub fn create_dot_android(dest: &Path, project_name: String, package_id: String, main_activity_name: Option<String>) -> Result<()> {
+pub fn create_dot_android(
+    dest: &Path,
+    project_name: String,
+    package_id: String,
+    main_activity_name: Option<String>,
+) -> Result<()> {
     // Construct the structure
     let dot_android = DotAndroid {
         package_id,
         project_name,
         gen_at_version: VERSION.to_owned(),
-        main_activity_name: main_activity_name.unwrap_or(DEFAULT_MAIN_ACTIVITY.to_owned())
+        main_activity_name: main_activity_name.unwrap_or(DEFAULT_MAIN_ACTIVITY.to_owned()),
     };
 
     // Serialize into Ron

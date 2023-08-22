@@ -3,7 +3,7 @@ use clap::Parser;
 
 use std::{collections::BTreeMap, path::PathBuf};
 
-use crate::utils::{prompt_for_input, parse_package_id};
+use crate::utils::{parse_package_id, prompt_for_input};
 
 const DEFAULT_COMPILE_SDK_VERSION: &str = "33";
 const DEFAULT_TARGET_SDK_VERSION: &str = "33";
@@ -78,7 +78,12 @@ fn post_create(args: Create) -> Result<()> {
     let dest = args.dest.clone().unwrap();
 
     android_cli::create_local_properties_file(&dest, &args.sdk_path.unwrap())?;
-    android_cli::create_dot_android(&dest, args.project_name.unwrap(), args.package_id.unwrap(), None)?;
+    android_cli::create_dot_android(
+        &dest,
+        args.project_name.unwrap(),
+        args.package_id.unwrap(),
+        None,
+    )?;
 
     Ok(())
 }
