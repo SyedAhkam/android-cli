@@ -20,7 +20,8 @@ enum SubCommand {
     Install(commands::install::Install),
     Run(commands::run::Run),
     Launch(commands::launch::Launch),
-    Devices(commands::devices::Devices)
+    Devices(commands::devices::Devices),
+    Link(commands::link::Link)
 }
 
 fn main() {
@@ -35,7 +36,8 @@ fn main() {
         SubCommand::Install(args) => commands::install::handle(args),
         SubCommand::Run(args) => commands::run::handle(args),
         SubCommand::Launch(args) => commands::launch::handle(args),
-        SubCommand::Devices(args) => commands::devices::handle(args)
+        SubCommand::Devices(args) => commands::devices::handle(args),
+        SubCommand::Link(args) => commands::link::handle(args)
     };
 
     if result.is_err() {

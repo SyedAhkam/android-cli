@@ -1,9 +1,9 @@
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result};
 use clap::Parser;
 
 use std::{collections::BTreeMap, path::PathBuf};
 
-use crate::utils::prompt_for_input;
+use crate::utils::{prompt_for_input, parse_package_id};
 
 const DEFAULT_COMPILE_SDK_VERSION: &str = "33";
 const DEFAULT_TARGET_SDK_VERSION: &str = "33";
@@ -46,22 +46,6 @@ pub struct Create {
 fn get_vars(args: &Create) -> Result<BTreeMap<String, String>> {
     let mut map = BTreeMap::<String, String>::new();
 
-    // FIXME: this is a hack, we should use a proper parser
-    let get_package_id = |package_id: String| {
-        let mut parts = package_id.split('.');
-        let domain = parts
-            .next()
-            .ok_or_else(|| anyhow!("domain part missing in package"))?;
-        let org = parts
-            .next()
-            .ok_or_else(|| anyhow!("org part missing in package"))?;
-        let name = parts
-            .next()
-            .ok_or_else(|| anyhow!("name part missing in package"))?;
-
-        anyhow::Ok((domain.to_owned(), org.to_owned(), name.to_owned()))
-    };
-
     // Metadata
     map.insert(
         "project_name".into(),
@@ -70,7 +54,7 @@ fn get_vars(args: &Create) -> Result<BTreeMap<String, String>> {
     map.insert("app_name".into(), args.name.as_ref().unwrap().to_owned());
 
     // Package identifiers
-    let (domain, org, name) = get_package_id(args.package_id.as_ref().unwrap().to_owned())
+    let (domain, org, name) = parse_package_id(args.package_id.as_ref().unwrap().to_owned())
         .context("failed to parse package id")?;
     map.insert("package_id_domain".into(), domain);
     map.insert("package_id_org".into(), org);
@@ -94,7 +78,7 @@ fn post_create(args: Create) -> Result<()> {
     let dest = args.dest.clone().unwrap();
 
     android_cli::create_local_properties_file(&dest, &args.sdk_path.unwrap())?;
-    android_cli::create_dot_android(&dest, args.package_id.unwrap())?;
+    android_cli::create_dot_android(&dest, args.project_name.unwrap(), args.package_id.unwrap(), None)?;
 
     Ok(())
 }

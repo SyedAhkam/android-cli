@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use anyhow::{Context, Result};
+use anyhow::{anyhow, Context, Result};
 use which::which;
 
 pub fn prompt_for_input(prompt: &str, default: Option<String>) -> Result<String> {
@@ -15,6 +15,29 @@ pub fn prompt_for_input(prompt: &str, default: Option<String>) -> Result<String>
         .with_prompt(prompt)
         .interact_text()
         .context("failed to prompt user")?)
+}
+
+// FIXME: this is a hack, we should use a proper parser
+pub fn parse_package_id(package_id: String) -> Result<(String, String, String)> {
+    let mut parts = package_id.split('.');
+    let domain = parts
+        .next()
+        .ok_or_else(|| anyhow!("domain part missing in package"))?;
+
+    let org = parts
+        .next()
+        .ok_or_else(|| anyhow!("org part missing in package"))?;
+
+    let name = parts
+        .next()
+        .ok_or_else(|| anyhow!("name part missing in package"))?;
+
+    anyhow::Ok((domain.to_owned(), org.to_owned(), name.to_owned()))
+}
+
+
+pub fn safe_name(name: String) -> String {
+    name.to_lowercase().replace(" ", "_")
 }
 
 pub fn find_gradle() -> Option<String> {
