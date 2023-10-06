@@ -3,6 +3,8 @@
 use anyhow::{anyhow, Context, Result};
 use which::which;
 
+use std::path::Path;
+
 pub fn prompt_for_input(prompt: &str, default: Option<String>) -> Result<String> {
     let theme = dialoguer::theme::ColorfulTheme::default();
     let mut builder = dialoguer::Input::<String>::with_theme(&theme);
@@ -40,8 +42,14 @@ pub fn safe_name(name: String) -> String {
 }
 
 pub fn find_gradle() -> Option<String> {
-    if std::path::Path::new("./gradlew").exists() {
-        return Some("./gradlew".to_owned());
+    let curr_dir_gradle = if cfg!(windows) {
+        "./gradlew.bat"
+    } else {
+        "./gradlew"
+    };
+    
+    if Path::new(curr_dir_gradle).exists() {
+        return Some(curr_dir_gradle.to_owned());
     }
 
     if which("gradle").is_ok() {
