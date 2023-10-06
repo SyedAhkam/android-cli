@@ -99,7 +99,6 @@ fn ensure_valid_args(args: Create) -> Result<Create> {
 
     // Ensure dest exists
     if !dest.exists() {
-        println!("doesnt exist");
         std::fs::create_dir_all(&dest)?;
     }
 
