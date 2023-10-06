@@ -1,0 +1,6 @@
+[book]
+title="Android CLI"
+authors = ["Syed Ahkam"]
+language = "en"
+multilingual = false
+src = "src"
