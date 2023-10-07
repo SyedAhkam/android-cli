@@ -1,6 +1,6 @@
 # Build Project
 
-```
+```ignore
 USAGE:
     android build [OPTIONS]
 

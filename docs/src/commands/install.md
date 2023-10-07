@@ -1,6 +1,6 @@
 # Install App
 
-```
+```ignore
 USAGE:
     android install [OPTIONS]
 

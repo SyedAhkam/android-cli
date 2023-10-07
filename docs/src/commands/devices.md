@@ -1,6 +1,6 @@
 # List Devices
 
-```
+```ignore
 USAGE:
     android devices
 
@@ -14,6 +14,6 @@ Executes `adb devices` and returns the output.
 
 ## Example
 
-```
+```sh
 $ android devices
 ```

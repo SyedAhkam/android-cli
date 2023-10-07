@@ -1,6 +1,6 @@
 # Run App
 
-```
+```ignore
 USAGE:
     android run [OPTIONS]
 

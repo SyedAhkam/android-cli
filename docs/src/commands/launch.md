@@ -1,6 +1,6 @@
 # Launch App
 
-```
+```ignore
 USAGE:
     android launch
 
