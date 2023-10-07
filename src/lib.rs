@@ -45,10 +45,21 @@ pub fn copy_template(dest: &Path, vars: BTreeMap<String, String>) -> Result<()> 
 }
 
 pub fn create_local_properties_file(root: &Path, sdk_path: &str) -> Result<()> {
+    let sdk_path = Path::new(sdk_path);
     let prop_file_path = PathBuf::new().join(root).join("local.properties");
 
-    let content = format!("sdk.dir={}", sdk_path);
-    std::fs::write(prop_file_path, content).context("Unable to write local.properties file")?;
+    // It is necessary to escape paths on windows
+    let content = if cfg!(windows) {
+        format!("sdk.dir={}", sdk_path.display()).replace("\\", "\\\\")
+    } else {
+        format!("sdk.dir={}", sdk_path.display())
+    };
+    
+    if sdk_path.exists() {
+        std::fs::write(prop_file_path, content).context("Unable to write local.properties file")?;
+    } else {
+        eprintln!("warning: did not create local.properties file because of invalid sdk path")
+    }
 
     Ok(())
 }
