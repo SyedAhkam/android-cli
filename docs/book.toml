@@ -1,6 +1,11 @@
 [book]
 title="Android CLI"
 authors = ["Syed Ahkam"]
+description = "Documentation for the tool android-cli"
+
 language = "en"
 multilingual = false
 src = "src"
+git-repository-url = "https://github.com/SyedAhkam/android-cli"
+git-repository-icon = "fa-github"
+edit-url-template = "https://github.com/SyedAhkam/android-cli/edit/master/docs/{path}"
