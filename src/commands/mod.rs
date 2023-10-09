@@ -5,3 +5,4 @@ pub mod install;
 pub mod launch;
 pub mod link;
 pub mod run;
+pub mod shell;

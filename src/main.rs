@@ -22,6 +22,7 @@ enum SubCommand {
     Launch(commands::launch::Launch),
     Devices(commands::devices::Devices),
     Link(commands::link::Link),
+    Shell(commands::shell::Shell)
 }
 
 fn main() {
@@ -38,6 +39,7 @@ fn main() {
         SubCommand::Launch(args) => commands::launch::handle(args),
         SubCommand::Devices(args) => commands::devices::handle(args),
         SubCommand::Link(args) => commands::link::handle(args),
+        SubCommand::Shell(args) => commands::shell::handle(args)
     };
 
     if result.is_err() {
