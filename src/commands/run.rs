@@ -1,4 +1,4 @@
-use anyhow::{anyhow, bail, Context, Result};
+use anyhow::{anyhow, bail, Result};
 use clap::{ArgAction, Parser};
 
 #[derive(Parser, Debug)]
