@@ -2,7 +2,7 @@
 
 Create, build, and release Android apps faster without Android Studio.
 
-> ⚠  Still️ in early development. Not all commands are implemented yet.
+> ⚠  Still️ in early development. Bugs may arise.
 
 ## Introduction
 
@@ -21,6 +21,7 @@ Android CLI offers a range of features and commands that can be executed from a 
 - `android emulator`: Launch an emulator
 
 And so much more..
+
 ## How does it work?
 
 Android CLI is an abstraction layer that simplifies and streamlines the Android development process by providing a user-friendly interface that abstracts away the complexity of Gradle and Android CLI tool commands.

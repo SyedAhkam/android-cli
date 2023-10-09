@@ -1,6 +1,6 @@
 # Introduction
 
-> ⚠ Still️ in early development. Not all commands are implemented yet.
+> ⚠ Still️ in early development. Bugs may arise.
 
 Android CLI is a powerful tool that simplifies and streamlines the Native Android development process. 
 

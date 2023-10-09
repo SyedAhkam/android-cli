@@ -1,3 +1,3 @@
 # android emulator
 
-TODO
+Not implemented yet.
