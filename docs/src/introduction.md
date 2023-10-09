@@ -1,5 +1,7 @@
 # Introduction
 
+> ⚠ Still️ in early development. Not all commands are implemented yet.
+
 Android CLI is a powerful tool that simplifies and streamlines the Native Android development process. 
 
 It provides a single interface for developers to create, build, and release Android applications without the need for cumbersome IDEs like Android Studio.
